@@ -106,6 +106,9 @@ work. Do not expose the port publicly or remove the local-access checks.
   is documented as 1080p; the service reduces it to limit processing/storage.
 - Surface movement means pixel change in a selected region. Fish, reflections, algae,
   camera exposure, noise, and water ripples can affect it. The threshold requires testing.
+- Microbubble detection is planned, not implemented. The owner reports that a low return
+  chamber makes the pump draw air and fill the display with microbubbles. The current
+  low-motion check does not detect that symptom reliably; bubbles can increase movement.
 - Calibration records a reference, not proof of healthy conditions. Confirm normal pump
   operation yourself. It is discarded on restart or settings changes.
 - Frames older than three seconds are hidden from the live view. A persisted event

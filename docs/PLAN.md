@@ -34,6 +34,44 @@ appears in API output. Real hardware qualification below remains outstanding.
 the tested scenarios, and an agreed alert sensitivity. Do not label the tank healthy
 merely because no event appeared. Recent rehabilitation means the reference can change.
 
+## Phase 1c — microbubble observation (planned, not implemented)
+
+The owner reports a tank-specific low-water symptom: the return pump draws air and
+fills the display with microbubbles. Treat a sudden, sustained increase in visible
+bubbles as a reason to inspect the return chamber, ATO, and pump intake. It is not a
+measurement of water level or confirmation of the cause. Red Sea's troubleshooting
+guidance also associates pump-injected bubbles with low rear-chamber water, restricted
+water supply, and skimmer bubbles; see the manufacturer reference below.
+
+The existing low-motion detector cannot stand in for this feature: bubbles may increase
+pixel movement. Build and evaluate a separate observation path:
+
+1. Select a visible region around the return outlet and adjacent open water. Record
+   normal appearance under representative lighting, feeding, and skimmer operation.
+2. Evaluate changes in the density and motion of small bright specks across short clips.
+   Compare with labelled, naturally occurring bubble episodes and normal clips from
+   separate days. Keep all owner footage local and outside this public repository.
+3. Check whether the current 640×360, 2 fps decode preserves enough detail. Compare
+   source-resolution crops and higher sampling rates before choosing capture settings;
+   measure the effect on the Mac and retained evidence. Do not claim visibility at night
+   or under blue lighting until tested.
+4. Require repeated evidence, with a separately tuned persistence interval, deduplication,
+   and recovery handling. Test confusion with food, stirred debris, fish, glare, exposure
+   changes, and ordinary skimmer bubbles. Maintenance pause suppresses this observation.
+   Missing or unusable video must produce uncertainty, never a reassuring water-level state.
+5. Proposed event: **"Unusual microbubbles — check return chamber water level, ATO,
+   and pump intake."** Attach an image and available clip. Surface it in the existing
+   dashboard; phone delivery remains Phase 2. Do not operate equipment automatically.
+
+This detects a symptom after air intake begins. An earlier warning requires a directly
+observable water level or a separate level sensor. Do not lower water, disable the ATO,
+or let the pump draw air deliberately to collect test footage.
+
+**Exit criteria:** demonstrate that real bubble episodes are visible in the chosen capture
+settings; report missed episodes, false events per day, time to detection, and lighting
+coverage on held-out recordings. Agree acceptable sensitivity with the owner before
+enabling the feature. Synthetic tests alone do not establish real-tank reliability.
+
 ## Phase 2 — useful notifications and phone access (not implemented)
 
 - Choose notification delivery with the owner; configure it only with explicit destination
@@ -85,6 +123,7 @@ This first prototype runs deterministic vision checks; it does not call an AI mo
 
 - [Eufy camera model comparison](https://service.eufy.com/article-description/Differences-Between-eufy-Indoor-Cams)
 - [Eufy RTSP configuration](https://service.eufy.com/article-description/Device-NAS-RTSP-Configuration-Guide)
+- [Red Sea MAX C manual, English p. 23: pump-injected microbubbles](https://redseafish.com/wp-content/uploads/2014/07/4191-MAX-C-Series-Manual_ENG.SP_.PT_.v14B.pdf)
 - [FFmpeg RTSP protocol options](https://ffmpeg.org/ffmpeg-protocols.html#rtsp)
 - [FastAPI application lifespan](https://fastapi.tiangolo.com/advanced/events/)
 - [Video-based fish locomotion research](https://arxiv.org/abs/2603.05407)

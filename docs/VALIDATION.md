@@ -60,6 +60,10 @@ setup form is a functional extension of the concept's collapsed setup row.
 
 - The actual Eufy camera stream, firmware, night mode, focus, glare, and blue-light quality.
 - Calibration accuracy, false alerts, and usable surface-region placement on this tank.
+- Microbubble detection is planned only. No detector or low-water inference has been
+  implemented or tested. Qualification requires normal and naturally occurring bubble
+  footage, visibility checks at the chosen resolution/frame rate, and measured false
+  events and detection delay; see Phase 1c in the plan.
 - Mac M4 CPU/memory use over time and macOS LaunchAgent installation/login behavior.
 - Overnight recovery, normal maintenance, real feeding, and camera/network interruptions.
 - Phone access and notification delivery are not implemented and were not claimed as tested.
