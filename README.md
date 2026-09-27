@@ -5,8 +5,9 @@ A local camera monitor for a reef aquarium. Built for an **M4 Mac mini** and an
 
 **Status: v0.1 prototype.** It has a working capture service, dashboard, deterministic
 visual checks, and local history. It is installed and smoke-tested on a locally reported
-M1 Pro test Mac; the M4 mini remains the intended always-on host. The actual camera and ReefLED
-still need private settings and hardware qualification. It does not yet recognize fish or send phone push notifications.
+M1 Pro test Mac; the M4 mini remains the intended always-on host. Basic real-camera
+streaming, snapshots, and decoder restart are verified. Calibration, extended tank trials,
+and ReefLED hardware qualification remain outstanding. It does not yet recognize fish or send phone push notifications.
 
 ## What works in this version
 

@@ -25,8 +25,11 @@ handoff's M4 mini. The owner confirmed this Mac is for testing and the M4 mini w
 the always-on host. Installed Python 3.12 and FFmpeg; foreground dashboard,
 LaunchAgent bootstrap/kickstart, and idle-sleep prevention verified. Short idle and
 synthetic-demo resource samples are in docs/VALIDATION.md. The tested LaunchAgent was
-uninstalled for the confirmed test-host role; foreground dashboard remains available. Actual device configuration,
-RTSP reconnect, true login/reboot, and the 48-hour tank trial remain outstanding.
+uninstalled for the confirmed test-host role; foreground dashboard remains available.
+The actual camera now supplies fresh frames, private snapshots, and verified decoder-restart
+recovery (3.1 seconds); short real-stream M1 Pro resource samples are recorded. Physical
+camera/network outage, surface calibration, ReefLED configuration, M4 deployment, true
+login/reboot, and the 48-hour tank trial remain outstanding.
 
 1. Enable NAS/RTSP continuous mode and verify the stream on the same LAN.
 2. Fix the camera position; show the water surface and as much of the display as possible.

@@ -71,3 +71,11 @@ interrupt pumps, the light, ATO, or other aquarium equipment. Keep camera clips 
 
 For light status, use [ReefLED setup](REEFLED_SETUP.md). For bubble footage, follow the
 [private visibility study](MICROBUBBLE_STUDY.md) before changing capture resolution/rate.
+
+### Actual camera follow-up
+
+After private setup, fresh non-demo frames and a private aquarium snapshot were verified
+on the M1 Pro. Restarting only the local decoder recovered in 3.1 seconds. This does not
+qualify camera power/network outages or the 48-hour trial. Room reflections are visible;
+confirm the fixed view and normal return-pump operation before recording a surface reference.
+The ReefLED address is still unconfigured. See the current [validation record](VALIDATION.md).

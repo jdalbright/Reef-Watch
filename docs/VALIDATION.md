@@ -1,6 +1,41 @@
 # Validation record — v0.1 prototype
 
-## Owner's Mac setup — 2026-09-27
+## Actual camera connection — 2026-09-27 follow-up
+
+The owner saved the RTSP settings privately on the M1 Pro test Mac. The real camera
+connection is now verified at a basic level; the ReefLED is still unconfigured.
+
+- Three status samples spaced three seconds apart reported connected, fresh, non-demo
+  frames with advancing timestamps and no connection error. A JPEG decoded at 640×360.
+- Saved and visually inspected one real aquarium snapshot through the existing API.
+  The image remains in private application data; neither it nor any stream address,
+  credentials, or device identifiers are included in Git. Room reflections are visible,
+  so region selection and visual thresholds remain uncalibrated.
+- The saved settings file has mode 0600.
+- Terminated only Reef Watch's identified FFmpeg child process, leaving the camera and
+  aquarium equipment unchanged. A replacement decoder resumed connected status with
+  a new post-interruption frame and a cleared error in **3.1 seconds** in the stricter
+  timed repeat. The earlier check was repeated because a replacement PID and briefly
+  buffered fresh frames alone do not establish recovery.
+- This tests **local decoder failure/restart**, not a camera power outage or Wi-Fi loss.
+  It was too short to trigger the 30-second outage event, and the samples did not observe
+  a stale state. Physical/network outage and outage/recovery-event qualification remain open.
+- Six process samples over approximately 30 seconds around real-stream decoder startup:
+
+  | Process | CPU range | Resident memory |
+  | --- | --- | --- |
+  | Reef Watch Python | 0.9–2.4% | 57.7 MiB |
+  | FFmpeg decoder | 5.2–13.8% | 25.2–100.5 MiB |
+
+  These are short M1 Pro samples including decoder startup, not steady-state M4 performance
+  or a sustained-load result. Final status was connected/fresh/non-demo with no error.
+
+Surface calibration awaits the owner's confirmation of fixed camera position and normal
+pump operation. Day/night thresholds, normal and naturally occurring bubble clips, sustained
+storage growth, physical camera outage, the 48-hour trial, and M4 deployment remain pending.
+No tank-health, microbubble-detection, or light-fixture compatibility claim follows from this test.
+
+## Initial Mac setup before camera configuration — 2026-09-27
 
 **Installed and software-qualified; aquarium hardware is not yet qualified.** The workspace
 was an empty Git repository with no uncommitted files; current `origin/main` was fetched
@@ -153,7 +188,8 @@ setup form is a functional extension of the concept's collapsed setup row.
 
 ## Still requires real hardware validation
 
-- The actual Eufy camera stream, firmware, night mode, focus, glare, and blue-light quality.
+- Sustained Eufy stream behavior, firmware, night mode, focus, glare, and blue-light quality.
+  Basic real streaming and local decoder recovery are now verified in the follow-up above.
 - Calibration accuracy, false alerts, and usable surface-region placement on this tank.
 - Microbubble detection is planned only. No detector or low-water inference has been
   implemented or tested. Qualification requires normal and naturally occurring bubble
