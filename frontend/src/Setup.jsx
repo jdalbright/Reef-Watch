@@ -7,7 +7,11 @@ export default function Setup({
   calibrationActive,
   metrics,
 }) {
-  const [draft, setDraft] = useState(() => ({ ...settings, camera_url: "" }));
+  const [draft, setDraft] = useState(() => ({
+    ...settings,
+    camera_url: "",
+    reefled_address: "",
+  }));
   const field = (name, value) => setDraft((d) => ({ ...d, [name]: value }));
   const roi = (index, value) =>
     field(
@@ -16,8 +20,11 @@ export default function Setup({
     );
   async function save(event) {
     event.preventDefault();
-    const { camera_configured, ...payload } = draft;
-    if (await act("settings", "PUT", payload)) field("camera_url", "");
+    const { camera_configured, reefled_configured, ...payload } = draft;
+    if (await act("settings", "PUT", payload)) {
+      field("camera_url", "");
+      field("reefled_address", "");
+    }
   }
   return (
     <details className="setup">
@@ -45,6 +52,35 @@ export default function Setup({
               Saved only on this Mac. The dashboard never returns the saved
               address.
             </small>
+          </label>
+          <label className="wide">
+            ReefLED 50 local IPv4 address (optional)
+            <input
+              type="password"
+              autoComplete="off"
+              value={draft.reefled_address}
+              onChange={(e) => field("reefled_address", e.target.value)}
+              placeholder={
+                settings.reefled_configured
+                  ? "Saved on this Mac · leave blank to keep"
+                  : "Enter the light's private IPv4 address"
+              }
+            />
+            <small>
+              Experimental, read-only local status. No ReefBeat password
+              required. Saved addresses are never returned.
+            </small>
+          </label>
+          <label className="wide checkbox-label">
+            <input
+              type="checkbox"
+              checked={draft.reefled_comparison_enabled}
+              onChange={(e) =>
+                field("reefled_comparison_enabled", e.target.checked)
+              }
+            />
+            Enable camera/light disagreement observations after checking live
+            readings against ReefBeat
           </label>
           <label>
             Timezone
@@ -170,6 +206,22 @@ export default function Setup({
                 onClick={() => act("settings", "PUT", { disconnect: true })}
               >
                 Disconnect camera
+              </button>
+            )}
+            {settings.reefled_configured && (
+              <button
+                type="button"
+                className="secondary"
+                onClick={async () => {
+                  if (
+                    await act("settings", "PUT", { disconnect_light: true })
+                  ) {
+                    field("reefled_address", "");
+                    field("reefled_comparison_enabled", false);
+                  }
+                }}
+              >
+                Disconnect light status
               </button>
             )}
           </div>

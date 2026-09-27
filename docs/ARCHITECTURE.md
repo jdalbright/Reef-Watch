@@ -31,6 +31,13 @@ flowchart TD
   settings writes, public settings view excluding credentials.
 - `app.py`: local API, host/origin protection, secret-safe validation errors, freshness
   gating, media filename allowlist, lifespan startup/shutdown and process lock.
+- `reefled.py`: experimental GET-only RSLED50 client and independent asynchronous poller.
+  Four fixed endpoints, numeric private IPv4, bounded bodies/deadlines, no redirects/proxies,
+  allowlisted fields, redacted identity, stale/unavailable states, and retry backoff.
+  Opt-in comparisons require fresh camera/device evidence; schedule checks stay independent.
+- `storage.py` also stores sanitized light polls in `light_readings` with the same retention.
+- `scripts/prepare-bubble-study.py`: offline local-video preparation for human visibility
+  review. Private source-detail/prototype clip pairs; no bubble detector or live capture changes.
 - `frontend/`: React/Vite dashboard. Built assets are included for Python-only installation.
 
 ## State and timing decisions
@@ -53,7 +60,8 @@ Event clips contain the preceding 2–15 seconds when enough frames are buffered
 concurrency is capped at two. An image remains available if encoding fails. There is no
 post-event recording, continuous archive, audio recording, or browser-native RTSP player.
 
-The runtime makes no Internet calls. Local alerts are written to the timeline only.
+The runtime makes no Internet calls. If privately configured, it polls the light over
+local HTTP independently of capture. Demo mode never connects to a configured light. Local alerts are written to the timeline only.
 Future notification delivery must be isolated from capture so network delays cannot stall
 the frame loop.
 
@@ -63,7 +71,7 @@ the frame loop.
 | --- | --- | --- |
 | GET | `/api/status` | Public settings, freshness, metrics, events, comparisons |
 | GET | `/api/frame` | Current JPEG; 503 when stale/missing |
-| PUT | `/api/settings` | Save settings; blank URL preserves credentials; `disconnect:true` clears them |
+| PUT | `/api/settings` | Save settings; blank addresses preserve values; `disconnect:true` clears camera; `disconnect_light:true` clears light |
 | POST | `/api/pause`, `/api/resume` | Maintenance controls |
 | POST | `/api/calibrate` | Start manual daytime surface reference |
 | POST | `/api/snapshots` | Save a fresh manual comparison |

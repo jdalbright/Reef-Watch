@@ -14,4 +14,10 @@ dist/
 node_modules/
 .DS_Store
 config.local.json
+settings.json
+bubble-study/
+*.mp4
+*.mov
+*.mkv
+*.avi
 qa/

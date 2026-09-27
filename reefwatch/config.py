@@ -1,3 +1,4 @@
+import ipaddress
 import json
 import os
 import sys
@@ -6,6 +7,17 @@ from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+
+def local_address(value):
+    """Accept numeric RFC1918 IPv4 only; never DNS, credentials, URLs or ports."""
+    if not value:
+        return ""
+    address = ipaddress.IPv4Address(value)
+    networks = ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")
+    if not any(address in ipaddress.ip_network(network) for network in networks):
+        raise ValueError("Enter the light's private IPv4 address.")
+    return str(address)
 
 
 def default_data_dir() -> Path:
@@ -17,6 +29,8 @@ def default_data_dir() -> Path:
 class Settings(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
     camera_url: str = Field(default="", repr=False, max_length=2048)
+    reefled_address: str = Field(default="", repr=False, max_length=15)
+    reefled_comparison_enabled: bool = False
     timezone: str = "America/New_York"
     lights_on: str = "07:30"
     lights_off: str = "18:30"
@@ -31,6 +45,11 @@ class Settings(BaseModel):
     dark_brightness: float = Field(default=8, ge=0, le=100)
     lit_brightness: float = Field(default=25, ge=1, le=255)
     retention_days: int = Field(default=14, ge=1, le=90)
+
+    @field_validator("reefled_address")
+    @classmethod
+    def valid_light_address(cls, value):
+        return local_address(value)
 
     @field_validator("camera_url")
     @classmethod
@@ -92,8 +111,9 @@ class Settings(BaseModel):
 
     def public(self):
         return {
-            **self.model_dump(exclude={"camera_url"}),
+            **self.model_dump(exclude={"camera_url", "reefled_address"}),
             "camera_configured": bool(self.camera_url),
+            "reefled_configured": bool(self.reefled_address),
         }
 
 

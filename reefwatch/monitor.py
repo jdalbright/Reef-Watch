@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw
 from .capture import FPS, Camera, DemoCamera, encode_clip
 from .config import Settings, minutes, save_json
 from .detection import Detector, Observation
+from .reefled import LightMonitor
 from .storage import Store
 
 
@@ -30,6 +31,7 @@ class Monitor:
     def __init__(self, settings: Settings, directory, demo=False, ffmpeg="ffmpeg"):
         self.settings, self.directory, self.demo, self.ffmpeg = settings, directory, demo, ffmpeg
         self.store = Store(directory)
+        self.light = LightMonitor("" if demo else settings.reefled_address, self.store)
         self.detector = Detector(settings)
         self.frame = None
         self.last_frame_at = self.last_frame_clock = None
@@ -47,6 +49,7 @@ class Monitor:
         self.store.prune(self.settings.retention_days)
         self.watch_task = asyncio.create_task(self.watchdog())
         self.restart_capture()
+        self.light.start()
 
     def restart_capture(self):
         self.started = time.monotonic()
@@ -64,12 +67,15 @@ class Monitor:
             self.capture_task = None
 
     async def configure(self, settings):
+        await self.light.stop()
         if self.capture_task:
             self.capture_task.cancel()
             with contextlib.suppress(asyncio.CancelledError):
                 await self.capture_task
         save_json(self.directory / "settings.json", settings.model_dump())
         self.settings = settings
+        self.light = LightMonitor("" if self.demo else settings.reefled_address, self.store)
+        self.light.start()
         self.restart_capture()
 
     def fresh(self):
@@ -84,6 +90,7 @@ class Monitor:
                     clock, at = time.monotonic(), time.time()
                     recovering = self.offline_reported
                     if self.last_frame_clock is None or clock - self.last_frame_clock > 2:
+                        self.light.reset_comparison()
                         self.buffer.clear()
                         self.detector.reset_temporal()
                     self.frame = jpeg_bytes(frame, self.demo)
@@ -105,6 +112,11 @@ class Monitor:
                         frame, now, clock, clock < self.paused_until
                     ):
                         self.record(event)
+                    disagreement = self.light.compare(
+                        self.detector.metrics, at, clock, clock < self.paused_until, self.settings
+                    )
+                    if disagreement:
+                        self.record(disagreement)
                     if clock - self.last_metric >= 30:
                         self.store.metric(at, self.detector.metrics)
                         self.last_metric = clock
@@ -117,6 +129,7 @@ class Monitor:
                     "Unable to read video. Check FFmpeg, camera power, Wi-Fi, and RTSP settings."
                 )
                 self.detector.reset_temporal()
+                self.light.reset_comparison()
                 self.buffer.clear()
                 await asyncio.sleep(delay)
                 delay = min(delay * 2, 30)
@@ -210,9 +223,12 @@ class Monitor:
             "settings": self.settings.public(),
             "events": self.store.events(),
             "snapshots": self.store.snapshots(),
+            "light": self.light.status(),
+            "light_history": self.store.light_history(),
         }
 
     async def stop(self):
+        await self.light.stop()
         for task in (self.capture_task, self.watch_task):
             if task:
                 task.cancel()

@@ -81,3 +81,30 @@ def test_demo_uses_separate_storage(tmp_path):
         assert c.get("/api/status").json()["demo"] is True
     assert (tmp_path / "demo/reef.sqlite3").exists()
     assert not (tmp_path / "reef.sqlite3").exists()
+
+
+def test_light_address_private_preserved_and_cleared(tmp_path, monkeypatch):
+    from reefwatch.reefled import ReefLEDClient
+
+    async def unavailable(self):
+        return {"state": "unavailable"}
+
+    monkeypatch.setattr(ReefLEDClient, "read", unavailable)
+    with client(tmp_path) as c:
+        address = "192.168.200.250"
+        response = c.put("/api/settings", json={"reefled_address": address}, headers=HEADERS)
+        assert response.status_code == 200
+        assert address not in response.text
+        assert response.json()["reefled_configured"]
+        assert (
+            c.put("/api/settings", json={"reefled_address": ""}, headers=HEADERS).status_code == 200
+        )
+        assert c.get("/api/status").json()["settings"]["reefled_configured"]
+        assert address not in c.get("/api/status").text
+        response = c.put(
+            "/api/settings", json={"reefled_address": "secret.example"}, headers=HEADERS
+        )
+        assert response.status_code == 422
+        assert "secret.example" not in response.text
+        c.put("/api/settings", json={"disconnect_light": True}, headers=HEADERS)
+        assert not c.get("/api/status").json()["settings"]["reefled_configured"]

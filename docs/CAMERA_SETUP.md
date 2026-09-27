@@ -54,3 +54,20 @@ off. Manual snapshots remain available whenever a fresh frame exists.
 
 **Port already in use:** stop the foreground process or uninstall the login service before
 starting another instance. A separate demo may run on `--port 8766` with its own data folder.
+
+## Mac setup status and next actions
+
+The 2026-09-27 setup session verified foreground operation, desktop/mobile controls,
+LaunchAgent start/restart, and its idle-sleep assertion on a locally reported M1 Pro Mac.
+This differs from the M4 mini handoff; confirm the intended host before reinstalling the
+login service. The service created during testing was uninstalled and foreground operation
+restored, preserving all data. A real
+logout/login or reboot was not performed. The camera was still unconfigured when these
+checks ran, so camera compatibility, real reconnect, and RTSP CPU/memory remain unverified.
+
+Enter the RTSP URL only in the local dashboard. After fresh frames arrive, complete the
+acceptance run above; camera power cycling is a physical action for the owner. Do not
+interrupt pumps, the light, ATO, or other aquarium equipment. Keep camera clips private.
+
+For light status, use [ReefLED setup](REEFLED_SETUP.md). For bubble footage, follow the
+[private visibility study](MICROBUBBLE_STUDY.md) before changing capture resolution/rate.

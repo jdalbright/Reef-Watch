@@ -1,3 +1,4 @@
+import json
 import re
 import sqlite3
 import time
@@ -24,6 +25,8 @@ class Store:
             CREATE UNIQUE INDEX IF NOT EXISTS daily_snapshot ON snapshots(day) WHERE automatic=1;
             CREATE TABLE IF NOT EXISTS metrics (at REAL, brightness REAL, motion REAL, phase TEXT);
             CREATE INDEX IF NOT EXISTS metric_time ON metrics(at);
+            CREATE TABLE IF NOT EXISTS light_readings (at REAL NOT NULL, reading TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS light_time ON light_readings(at);
         """)
 
     def event(self, event_id, observation, at, snapshot=None):
@@ -76,7 +79,7 @@ class Store:
 
     def prune(self, days, now=None):
         cutoff = (time.time() if now is None else now) - days * 86400
-        for table in ("events", "snapshots", "metrics"):
+        for table in ("events", "snapshots", "metrics", "light_readings"):
             self.db.execute(f"DELETE FROM {table} WHERE at < ?", (cutoff,))
         self.db.commit()
         referenced = {
@@ -92,6 +95,18 @@ class Store:
                 and path.stat().st_mtime < cutoff
             ):
                 path.unlink()
+
+    def light_reading(self, at, reading):
+        self.db.execute("INSERT INTO light_readings VALUES(?,?)", (at, json.dumps(reading)))
+        self.db.commit()
+
+    def light_history(self):
+        return [
+            {"polled_at": row[0], **json.loads(row[1])}
+            for row in self.db.execute(
+                "SELECT at, reading FROM light_readings ORDER BY at DESC LIMIT 20"
+            )
+        ]
 
     def close(self):
         self.db.close()

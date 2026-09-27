@@ -110,10 +110,17 @@ def create_app(directory=None, demo=False, ffmpeg="ffmpeg"):
                 payload.pop("camera_url", None)
             if disconnect is True:
                 payload["camera_url"] = ""
+            disconnect_light = payload.pop("disconnect_light", False)
+            if disconnect_light is True:
+                payload["reefled_address"] = ""
+                payload["reefled_comparison_enabled"] = False
+            elif not payload.get("reefled_address"):
+                payload.pop("reefled_address", None)
             updated = Settings.model_validate({**monitor.settings.model_dump(), **payload})
         except (ValueError, TypeError):
             raise HTTPException(
-                422, "Invalid settings. Check the schedule, timezone, RTSP URL, and surface region."
+                422,
+                "Invalid settings. Check schedule, timezone, RTSP URL, light IPv4 address, and region.",
             ) from None
         await monitor.configure(updated)
         return updated.public()
@@ -123,6 +130,7 @@ def create_app(directory=None, demo=False, ffmpeg="ffmpeg"):
         monitor = app.state.monitor
         monitor.paused_until = time.monotonic() + 15 * 60
         monitor.detector.reset_temporal()
+        monitor.light.reset_comparison()
         return {"paused": True}
 
     @app.post("/api/resume")
@@ -130,6 +138,7 @@ def create_app(directory=None, demo=False, ffmpeg="ffmpeg"):
         monitor = app.state.monitor
         monitor.paused_until = 0
         monitor.detector.reset_temporal()
+        monitor.light.reset_comparison()
         return {"paused": False}
 
     @app.post("/api/calibrate")

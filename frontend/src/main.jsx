@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { request, when } from "./api";
 import Setup from "./Setup";
+import LightStatus from "./LightStatus";
 import "./styles.css";
 
 function CameraView({ data }) {
@@ -251,6 +252,7 @@ function App() {
           fresh: false,
           camera: "offline",
           metrics: { phase: "unknown" },
+          light: { ...data.light, fresh: false, state: "unavailable" },
         }
       : data;
   return (
@@ -295,6 +297,11 @@ function App() {
             <CameraView data={effective} />
             <MonitorStatus data={effective} act={act} />
           </div>
+          <LightStatus
+            light={effective.light}
+            history={effective.light_history}
+            enabled={effective.settings.reefled_comparison_enabled}
+          />
           <div className="history">
             <Events events={effective.events} act={act} />
             <Comparisons

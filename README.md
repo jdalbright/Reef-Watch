@@ -4,8 +4,9 @@ A local camera monitor for a reef aquarium. Built for an **M4 Mac mini** and an
 **Eufy Indoor Cam 2K** using its continuous RTSP stream.
 
 **Status: v0.1 prototype.** It has a working capture service, dashboard, deterministic
-visual checks, and local history. It has **not** been tested with the owner's camera
-or on the owner's Mac. It does not yet recognize fish or send phone push notifications.
+visual checks, and local history. It is installed and smoke-tested on a locally reported
+M1 Pro Mac; the intended M4 host still needs confirmation. The actual camera and ReefLED
+still need private settings and hardware qualification. It does not yet recognize fish or send phone push notifications.
 
 ## What works in this version
 
@@ -20,6 +21,8 @@ or on the owner's Mac. It does not yet recognize fish or send phone push notific
 - SQLite history and media retention, default 14 days, on the Mac.
 - A clearly labelled synthetic demo using its own data directory.
 - A macOS login service installer that prevents idle system sleep while running.
+- Experimental GET-only RSLED50 status, local history, and opt-in camera/light comparisons.
+  Hardware compatibility is unverified; see [ReefLED setup](docs/REEFLED_SETUP.md).
 
 The camera observes appearances. It does **not** measure ammonia, nitrate, phosphate,
 salinity, temperature, dissolved oxygen, PAR, or actual pump flow. It cannot certify tank
@@ -44,8 +47,9 @@ health or diagnose disease. Hidden fish will never be declared dead by this vers
    lights 07:30–18:30, 60-minute sunrise and sunset.
 6. Position the camera, save the surface region, and follow [camera setup](docs/CAMERA_SETUP.md).
 
-The setup script installs Python 3.12 and FFmpeg via Homebrew and the pinned Python
-dependencies. The built dashboard is committed, so **Node is not needed to run it**.
+The setup script reuses installed Python 3.12 and FFmpeg, installs missing tools via
+Homebrew, and installs pinned Python dependencies. It disables Homebrew auto-update,
+unrelated dependent upgrades, and cleanup for this setup. The built dashboard is committed, so **Node is not needed to run it**.
 Stopping the foreground command with Control-C stops monitoring.
 
 ### Try it without a camera
@@ -85,7 +89,7 @@ LaunchAgent is installed.
 
 On macOS, data is stored in `~/Library/Application Support/Reef Watch/`:
 
-- `settings.json`: camera URL and settings; file permissions `0600`.
+- `settings.json`: camera URL, private light address, and settings; file permissions `0600`.
 - `reef.sqlite3`: events, measurements, and comparison metadata.
 - `media/`: local images and event clips.
 
@@ -109,9 +113,12 @@ work. Do not expose the port publicly or remove the local-access checks.
 - Microbubble detection is planned, not implemented. The owner reports that a low return
   chamber makes the pump draw air and fill the display with microbubbles. The current
   low-motion check does not detect that symptom reliably; bubbles can increase movement.
-- A read-only ReefLED 50 connection is planned, not implemented. It will target local
-  device status and camera comparisons after firmware compatibility is verified; see
-  Phase 1d of the plan. Current lighting checks use the manually configured schedule.
+  A [private clip study tool](docs/MICROBUBBLE_STUDY.md) prepares matched views for human
+  visibility evaluation; it is not a detector.
+- A read-only ReefLED 50 connector is implemented experimentally, with synthetic tests.
+  It has not been qualified on the owner's fixture. Enter its address privately and
+  compare status with ReefBeat before enabling comparison observations. Expected lighting
+  checks still use the separately configured schedule; no schedule/program import is provided.
 - Calibration records a reference, not proof of healthy conditions. Confirm normal pump
   operation yourself. It is discarded on restart or settings changes.
 - Frames older than three seconds are hidden from the live view. A persisted event

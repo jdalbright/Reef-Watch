@@ -18,7 +18,14 @@ service, repeatable dependency installation, automated tests, and a separate dem
 desktop/mobile widths; failed or stale capture is visibly unavailable; no credential
 appears in API output. Real hardware qualification below remains outstanding.
 
-## Phase 1b — qualify on the actual tank (next)
+## Phase 1b — qualify on the actual tank (in progress)
+
+Mac setup progress (2026-09-27): the local host reports M1 Pro / 16 GiB, not the
+handoff's M4 mini; host confirmation is pending. Installed Python 3.12 and FFmpeg; foreground dashboard,
+LaunchAgent bootstrap/kickstart, and idle-sleep prevention verified. Short idle and
+synthetic-demo resource samples are in docs/VALIDATION.md. The tested LaunchAgent was
+uninstalled after the host mismatch was discovered; foreground dashboard remains available. Actual device configuration,
+RTSP reconnect, true login/reboot, and the 48-hour tank trial remain outstanding.
 
 1. Enable NAS/RTSP continuous mode and verify the stream on the same LAN.
 2. Fix the camera position; show the water surface and as much of the display as possible.
@@ -35,7 +42,11 @@ appears in API output. Real hardware qualification below remains outstanding.
 the tested scenarios, and an agreed alert sensitivity. Do not label the tank healthy
 merely because no event appeared. Recent rehabilitation means the reference can change.
 
-## Phase 1c — microbubble observation (planned, not implemented)
+## Phase 1c — microbubble observation (study tooling ready; detector not implemented)
+
+A private local-file clip preparation tool now creates source-detail and prototype-rate
+views with a review manifest; see [study procedure](MICROBUBBLE_STUDY.md). Encoding was
+verified using synthetic footage only. No real normal/bubble examples are evaluated yet.
 
 The owner reports a tank-specific low-water symptom: the return pump draws air and
 fills the display with microbubbles. Treat a sudden, sustained increase in visible
@@ -73,7 +84,14 @@ settings; report missed episodes, false events per day, time to detection, and l
 coverage on held-out recordings. Agree acceptable sensitivity with the owner before
 enabling the feature. Synthetic tests alone do not establish real-tank reliability.
 
-## Phase 1d — ReefLED 50 status integration (planned, not implemented)
+## Phase 1d — ReefLED 50 status integration (experimental implementation; hardware pending)
+
+Software progress (2026-09-27): direct fixed-endpoint GET client, model gate, private
+address setup, field validation, timeouts/backoff, freshness, history, status panel, and
+opt-in sustained camera disagreement observations are implemented and synthetically tested.
+Comparison observations default off. The first actual read and model/firmware verification
+remain blocked on private device setup; no firmware compatibility is claimed. See
+[ReefLED qualification](REEFLED_SETUP.md) for the pinned research and MIT license review.
 
 Connect the Mac directly to the light over the home network, starting with a read-only
 connection test. The community `ha-reefbeat-component` project lists the G1 RSLED50 as
