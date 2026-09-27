@@ -9,7 +9,8 @@ completion of these checks. No actual camera or fixture connection is claimed.
 
 Environment: **Apple M1 Pro, 16 GiB RAM**, macOS 27.0 (arm64), Python 3.12.14,
 FFmpeg 9.0.2, reported by `sysctl`/`sw_vers`. This differs from the handoff's M4 Mac mini.
-These results must not be attributed to an M4. Confirmation of the intended host is pending.
+These results must not be attributed to an M4. The owner subsequently confirmed that
+this M1 Pro is the test host and the M4 mini will be the always-on host.
 
 - **63 automated tests pass on this Mac**, including the original 39 tests, new GET-only
   ReefLED fixtures, privacy/validation, bad/oversized/redirected responses, total request
@@ -25,7 +26,8 @@ These results must not be attributed to an M4. Confirmation of the intended host
   restarted it; the loopback listener returned under a new PID. `caffeinate` holds the
   intended idle-system-sleep assertion. Actual logout/login/reboot was **not** performed.
   After discovering the M1 Pro/M4 host mismatch, the newly created LaunchAgent was
-  uninstalled and the dashboard returned to foreground operation pending host confirmation.
+  uninstalled and the dashboard returned to foreground operation. The owner confirmed
+  this test-host role; leave automatic startup off here.
 - Before removal, LaunchAgent file mode was 0600; application-data directory is 0700. Settings privacy is
   covered by tests; production settings had not yet been saved. Demo configuration was
   written only under disposable private temporary data, separate from real tank history.

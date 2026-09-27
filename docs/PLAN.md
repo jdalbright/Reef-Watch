@@ -21,10 +21,11 @@ appears in API output. Real hardware qualification below remains outstanding.
 ## Phase 1b — qualify on the actual tank (in progress)
 
 Mac setup progress (2026-09-27): the local host reports M1 Pro / 16 GiB, not the
-handoff's M4 mini; host confirmation is pending. Installed Python 3.12 and FFmpeg; foreground dashboard,
+handoff's M4 mini. The owner confirmed this Mac is for testing and the M4 mini will be
+the always-on host. Installed Python 3.12 and FFmpeg; foreground dashboard,
 LaunchAgent bootstrap/kickstart, and idle-sleep prevention verified. Short idle and
 synthetic-demo resource samples are in docs/VALIDATION.md. The tested LaunchAgent was
-uninstalled after the host mismatch was discovered; foreground dashboard remains available. Actual device configuration,
+uninstalled for the confirmed test-host role; foreground dashboard remains available. Actual device configuration,
 RTSP reconnect, true login/reboot, and the 48-hour tank trial remain outstanding.
 
 1. Enable NAS/RTSP continuous mode and verify the stream on the same LAN.

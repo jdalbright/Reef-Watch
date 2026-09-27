@@ -59,8 +59,8 @@ starting another instance. A separate demo may run on `--port 8766` with its own
 
 The 2026-09-27 setup session verified foreground operation, desktop/mobile controls,
 LaunchAgent start/restart, and its idle-sleep assertion on a locally reported M1 Pro Mac.
-This differs from the M4 mini handoff; confirm the intended host before reinstalling the
-login service. The service created during testing was uninstalled and foreground operation
+The owner confirmed this is the test host and the M4 mini is the always-on target.
+Leave the login service off here; follow [M4 handoff](MAC_HANDOFF.md) on the mini. The service created during testing was uninstalled and foreground operation
 restored, preserving all data. A real
 logout/login or reboot was not performed. The camera was still unconfigured when these
 checks ran, so camera compatibility, real reconnect, and RTSP CPU/memory remain unverified.
