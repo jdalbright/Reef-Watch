@@ -3,8 +3,9 @@
 ## Goal
 
 Help the owner notice meaningful visual changes in a 20-gallon reef using an existing
-Eufy Indoor Cam 2K and an always-on M4 Mac mini. Make every observation inspectable with
-its time and available visual evidence. Avoid broad claims about tank health.
+Eufy Indoor Cam 2K and an always-on M4 Mac mini. Add read-only status from the owner's
+Red Sea ReefLED 50 to help interpret camera observations. Make every observation
+inspectable with its time, source, and available evidence. Avoid broad claims about tank health.
 
 ## Phase 1 — local prototype (implemented in v0.1)
 
@@ -72,6 +73,49 @@ settings; report missed episodes, false events per day, time to detection, and l
 coverage on held-out recordings. Agree acceptable sensitivity with the owner before
 enabling the feature. Synthetic tests alone do not establish real-tank reliability.
 
+## Phase 1d — ReefLED 50 status integration (planned, not implemented)
+
+Connect the Mac directly to the light over the home network, starting with a read-only
+connection test. The community `ha-reefbeat-component` project lists the G1 RSLED50 as
+supported and documents local device access. This establishes a promising integration
+path, not compatibility with the owner's firmware. Use that project's protocol research
+as a reference; the planned Reef Watch connector does not require Home Assistant.
+
+1. Confirm that the ReefLED is on the home network and reachable from the Mac. Enter its
+   local address in private app settings; verify the reported model and firmware where
+   available. A router address reservation can keep the address stable. Do not commit
+   device addresses, identifiers, credentials, or raw device responses to GitHub.
+2. Verify documented read endpoints against the actual device before implementing a
+   small, read-only client. Allow only the required status requests; do not send changes
+   to channels, schedules, acclimation, network settings, or device power.
+3. Target blue, white, and moon channel percentages, operating mode, and available fixture
+   temperature/fan readings. Confirm field meanings and units against ReefBeat. Show
+   unsupported or missing fields as unavailable; device-reported percentages do not
+   measure emitted light or PAR, and fixture temperature is not aquarium temperature.
+4. Poll independently of camera capture with bounded request timeouts and retry backoff.
+   Start by evaluating a 30-second interval. Timestamp readings, mark stale data clearly,
+   and distinguish an unreachable light from a light reporting zero output. A failed light
+   connection must not stop the camera or be treated as proof of a lighting failure.
+5. Add a dashboard light-status panel and local history. Compare fresh reported channel
+   levels with sustained camera brightness changes. Example observation: **"Light reports
+   active channels, but the camera view is unusually dark."** Include both sources and
+   their timestamps; use persistence and maintenance suppression to limit nuisance events.
+6. Keep the owner's expected light schedule as a separate reference. A device unexpectedly
+   reporting off during daytime should not redefine that as normal. Account for known
+   ramps, manual overrides, and acclimation when interpreting observations. Continue the
+   existing camera schedule checks when device status is unavailable.
+
+The first connector uses local status without a ReefBeat cloud login. Full schedule and
+program-library import needs separate investigation: the community project documents
+cloud support for G1 program names and values. Do not promise automatic schedule import
+as part of this phase. Equipment control remains outside scope; phone delivery is Phase 2.
+
+**Exit criteria:** verify reads on the owner's RSLED50/firmware without changing settings;
+compare values with ReefBeat across daylight and ramp periods; test timeouts, malformed or
+partial responses, stale readings, reconnection, and camera-only fallback using synthetic
+fixtures. Confirm that every client request is read-only and that persistent camera/device
+disagreement is recorded with evidence. Record actual hardware results separately from tests.
+
 ## Phase 2 — useful notifications and phone access (not implemented)
 
 - Choose notification delivery with the owner; configure it only with explicit destination
@@ -124,6 +168,8 @@ This first prototype runs deterministic vision checks; it does not call an AI mo
 - [Eufy camera model comparison](https://service.eufy.com/article-description/Differences-Between-eufy-Indoor-Cams)
 - [Eufy RTSP configuration](https://service.eufy.com/article-description/Device-NAS-RTSP-Configuration-Guide)
 - [Red Sea MAX C manual, English p. 23: pump-injected microbubbles](https://redseafish.com/wp-content/uploads/2014/07/4191-MAX-C-Series-Manual_ENG.SP_.PT_.v14B.pdf)
+- [Red Sea ReefLED manual: home-network connection](https://g1.redseafish.com/wp-content/uploads/2018/10/7029_ReefLED-Manual_EN_-v19A.pdf)
+- [Community ReefBeat integration: RSLED50 compatibility and ReefLED capabilities](https://github.com/Elwinmage/ha-reefbeat-component/blob/main/README.md)
 - [FFmpeg RTSP protocol options](https://ffmpeg.org/ffmpeg-protocols.html#rtsp)
 - [FastAPI application lifespan](https://fastapi.tiangolo.com/advanced/events/)
 - [Video-based fish locomotion research](https://arxiv.org/abs/2603.05407)

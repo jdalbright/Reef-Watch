@@ -65,6 +65,10 @@ setup form is a functional extension of the concept's collapsed setup row.
   footage, visibility checks at the chosen resolution/frame rate, and measured false
   events and detection delay; see Phase 1c in the plan.
 - Mac M4 CPU/memory use over time and macOS LaunchAgent installation/login behavior.
+- ReefLED 50 integration is planned only. No connection to the owner's light has been
+  made and no connector is implemented. Local endpoint compatibility, field meanings,
+  read-only behavior, stale-data handling, and camera comparisons require qualification
+  under Phase 1d of the plan.
 - Overnight recovery, normal maintenance, real feeding, and camera/network interruptions.
 - Phone access and notification delivery are not implemented and were not claimed as tested.
 

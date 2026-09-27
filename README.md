@@ -109,6 +109,9 @@ work. Do not expose the port publicly or remove the local-access checks.
 - Microbubble detection is planned, not implemented. The owner reports that a low return
   chamber makes the pump draw air and fill the display with microbubbles. The current
   low-motion check does not detect that symptom reliably; bubbles can increase movement.
+- A read-only ReefLED 50 connection is planned, not implemented. It will target local
+  device status and camera comparisons after firmware compatibility is verified; see
+  Phase 1d of the plan. Current lighting checks use the manually configured schedule.
 - Calibration records a reference, not proof of healthy conditions. Confirm normal pump
   operation yourself. It is discarded on restart or settings changes.
 - Frames older than three seconds are hidden from the live view. A persisted event
